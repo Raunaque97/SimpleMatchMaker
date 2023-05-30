@@ -7,10 +7,10 @@ let web3 = new Web3();
 const app = new Koa();
 const router = new Router();
 const port = process.env.PORT || 3000;
+const buffer = 10; // in seconds
 
 //   const privateKey = PrivateKey.fromBase58(process.env.PRIVATE_KEY);
 //   const publicKey = privateKey.toPublicKey();
-
 const queue = new Map();
 let waitingCount = 0;
 
@@ -29,7 +29,7 @@ app.listen(port, () => {
 async function getMatch(data) {
   // deserialize the data
   const { addr, proxyAddr, wager, validUntil, sign } = JSON.parse(data);
-  if (validUntil < Date.now()) {
+  if (validUntil * 1000 < Date.now()) {
     console.log("\x1b[31m%s\x1b[0m", "Expired validUntil");
     throw new Error("Expired");
   }
@@ -46,14 +46,13 @@ async function getMatch(data) {
     throw new Error("Invalid signature");
   }
   if (queue.has(wager)) {
-    // pop from the queue a player with validUntil > now
     let matchReq = queue.get(wager).pop();
-    // discard bad requests
+    // discard bad match requests
     while (
       matchReq &&
-      (matchReq.validUntil < Date.now() || matchReq.addr === addr)
+      ((matchReq.validUntil + buffer) * 1000 < Date.now() ||
+        matchReq.addr === addr)
     ) {
-      // TODO add buffer time to validUntil
       matchReq = queue.get(wager).pop();
       waitingCount--;
     }

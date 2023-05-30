@@ -1,6 +1,6 @@
 require("dotenv").config();
 const Web3 = require("web3");
-let web3 = new Web3();
+let web3 = new Web3("https://ethereum.blockpi.network/v1/rpc/public");
 
 const port = process.env.PORT || 3000;
 const url = "http://localhost:" + port + "/";
@@ -10,7 +10,7 @@ async function getPlayerRequest() {
   // generate a random proxy address
   let proxyAddr = web3.eth.accounts.create(["seed1"]).address;
   let wager = 1e6;
-  let validUntil = Date.now() + 1000 * 60 * 1; // 1 minute
+  let validUntil = Math.floor(Date.now() / 1000) + 60; // in epoch seconds
   // sign the data
   const msgHash = web3.utils.soliditySha3(
     web3.utils.encodePacked(
@@ -35,6 +35,10 @@ async function getPlayerRequest() {
 (async () => {
   try {
     let params = await getPlayerRequest();
+    console.log(
+      "now " + Date.now(),
+      "blockTime " + (await web3.eth.getBlock("latest").timestamp)
+    );
     console.log(url + "friendly/" + params);
     // send request to server and get json response
     let response = await fetch(url + "friendly/" + params).then((res) =>
