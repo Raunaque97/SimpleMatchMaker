@@ -21,7 +21,7 @@ async function getPlayerRequest() {
       { value: validUntil, type: "uint256" }
     )
   );
-  // using ethers.js : ethers.utils.solidityPack(["address","address","uint256","uint256"], [player.address, proxyAddr, wager, validUntil] )=
+  // using ethers.js : ethers.utils.solidityPack(["address","address","uint256","uint256"], [player.address, proxyAddr, wager, validUntil] )
   let sign = (await web3.eth.accounts.sign(msgHash, player.privateKey))
     .signature;
   // using ethers.js : player.signMessage(ethers.utils.arrayify(msgHash))

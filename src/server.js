@@ -17,6 +17,7 @@ let waitingCount = 0;
 router.get("/friendly/:data(.*)", async (ctx) => {
   try {
     ctx.body = await getMatch(ctx.params.data);
+    ctx.headers["Access-Control-Allow-Origin"] = "*"; // allow CORS TODO: remove *
   } catch (e) {
     ctx.body = { error: e.message };
   }
