@@ -2,9 +2,11 @@ require("dotenv").config();
 const Koa = require("koa");
 const Router = require("@koa/router");
 const Web3 = require("web3");
+const cors = require("@koa/cors");
 let web3 = new Web3();
 
 const app = new Koa();
+app.use(cors());
 const router = new Router();
 const port = process.env.PORT || 3000;
 const buffer = 10; // in seconds
@@ -17,7 +19,6 @@ let waitingCount = 0;
 router.get("/friendly/:data(.*)", async (ctx) => {
   try {
     ctx.body = await getMatch(ctx.params.data);
-    ctx.headers["Access-Control-Allow-Origin"] = "*"; // allow CORS TODO: remove *
   } catch (e) {
     ctx.body = { error: e.message };
   }
@@ -38,8 +39,8 @@ async function getMatch(data) {
     web3.utils.encodePacked(
       { value: addr, type: "address" },
       { value: proxyAddr, type: "address" },
-      { value: wager, type: "uint256" },
-      { value: validUntil, type: "uint256" }
+      { value: wager.toString(), type: "uint256" },
+      { value: validUntil.toString(), type: "uint256" }
     )
   );
   if (web3.eth.accounts.recover(msgHash, sign) !== addr) {

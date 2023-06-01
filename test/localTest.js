@@ -3,8 +3,8 @@ const Web3 = require("web3");
 let web3 = new Web3("https://ethereum.blockpi.network/v1/rpc/public");
 
 const port = process.env.PORT || 3000;
-// const url = "http://localhost:" + port + "/";
-const url = "https://simple-mm.cyclic.app/";
+const url = "http://localhost:" + port + "/";
+// const url = "https://simple-mm.cyclic.app/";
 
 async function getPlayerRequest() {
   let player = web3.eth.accounts.create(["seed"]);
