@@ -21,8 +21,10 @@ async function getPlayerRequest() {
       { value: validUntil, type: "uint256" }
     )
   );
+  // using ethers.js : ethers.utils.solidityPack(["address","address","uint256","uint256"], [player.address, proxyAddr, wager, validUntil] )=
   let sign = (await web3.eth.accounts.sign(msgHash, player.privateKey))
     .signature;
+  // using ethers.js : player.signMessage(ethers.utils.arrayify(msgHash))
 
   return JSON.stringify({
     addr: player.address,
@@ -42,10 +44,10 @@ async function getPlayerRequest() {
     );
     console.log(url + "friendly/" + params);
     // send request to server and get json response
-    let response = await fetch(url + "friendly/" + params).then((res) =>
-      res.json()
-    );
-    console.log(response);
+    // let response = await fetch(url + "friendly/" + params).then((res) =>
+    //   res.json()
+    // );
+    // console.log(response);
 
     // show test passed in green
     console.log("\x1b[32m%s\x1b[0m", "Test passed");
